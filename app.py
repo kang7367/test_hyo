@@ -3,6 +3,7 @@ import numpy as np
 
 st.set_page_config(page_title="PSC 거더 설계 검증 시스템", layout="wide")
 st.title("🏗️ PSC 거더 단계별 응력 및 검증 시스템 (KDS 기준)")
+st.title("테스트합니다.")
 st.write("엑셀 시트의 KDS 설계 기준 연산 논리 및 수치를 검증하는 프로토타입 대시보드입니다.")
 
 # 사이드바: 기본 스펙 및 재료 변수 입력
