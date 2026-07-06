@@ -1,4 +1,6 @@
 import streamlit as st
+import numpy as np
+
 from structure_design.sections import GirderSection
 from structure_design.loads import GirderLoads
 
