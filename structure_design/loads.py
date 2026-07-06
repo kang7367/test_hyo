@@ -1,10 +1,35 @@
 class GirderLoads:
-    """PC 거더 하중 산정 및 휨 모멘트 계산 클래스"""
+    """PC 거더 하중 산정 및 조합 계산 클래스"""
     def __init__(self, girder_area_mm2, span_m, live_load_kpa):
-        self.area_m2 = girder_area_mm2 / 1_000_000
+        self.area_m2 = girder_area_mm2 / 1_000_000  # mm2 to m2
         self.span = span_m
         self.live_load = live_load_kpa
         
+    def calculate_dead_loads(self, concrete_density=25.0):
+        """
+        고정하중 산정: Girder S.W, PC Slab S.W, Finished
+        density: kN/m3 (일반적으로 25.0 적용)
+        """
+        sw_girder = self.area_m2 * concrete_density
+        # 예시로 고정 하중값들 정의 (엑셀 시트 연동 가능)
+        dead_loads = {
+            "Girder_SW": sw_girder,
+            "Finished": 1.1  # 기본값 kN/m
+        }
+        return dead_loads
+
+    def get_load_combination(self, dead_loads, live_load_factor=1.2, dead_load_factor=1.2):
+        """
+        사용하중 및 계수하중 조합 (image_a5b649.png 로직 반영)
+        """
+        sum_dead = sum(dead_loads.values())
+        service_load = sum_dead + self.live_load
+        factored_load = (dead_load_factor * sum_dead) + (live_load_factor * self.live_load)
+        
+        return {
+            "Service_Load": service_load,
+            "Factored_Load": factored_load
+        }
     def calculate_moments(self, dead_loads, live_load_factor=1.2, dead_load_factor=1.2):
         """
         엑셀 시트 로직: M = factor * w * L^2 / 8 (단순보 기준)
