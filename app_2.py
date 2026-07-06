@@ -1,32 +1,36 @@
 import streamlit as st
-import pandas as pd
-import numpy as np
+from structure_design.sections import GirderSection
+from structure_design.loads import GirderLoads
 
-# 1. 앱 제목과 간단한 텍스트
-st.title('내 생애 첫 Streamlit 앱 🎈')
-st.write('Streamlit을 사용하면 파이썬 코드로 쉽게 웹 대시보드를 만들 수 있습니다.')
+st.set_page_config(page_title="PSC 설계 플랫폼", layout="wide")
 
-st.divider() # 구분선
+st.title("🏗️ PSC 거더 설계 자동화 플랫폼")
 
-# 2. 사용자 입력 위젯 (텍스트 입력 및 슬라이더)
-st.header('사용자 입력 테스트')
-name = st.text_input('이름을 입력하세요:', '홍길동')
-age = st.slider('나이를 선택하세요:', 0, 100, 25)
+# 사이드바 입력창
+st.sidebar.header("설계 변수 입력")
+B = st.sidebar.number_input("전체 폭 (B, mm)", value=1100)
+B1 = st.sidebar.number_input("플랜지 제외 폭 (B1, mm)", value=300)
+H = st.sidebar.number_input("전체 높이 (H, mm)", value=1080)
+H2 = st.sidebar.number_input("하부 플랜지 높이 (H2, mm)", value=450)
+span = st.sidebar.number_input("Span (m)", value=11.0)
+live_load = st.sidebar.number_input("활하중 (kPa)", value=20.0)
 
-st.success(f'안녕하세요, **{name}**님! 선택하신 나이는 **{age}**세입니다.')
-
-# 3. 간단한 데이터프레임 및 차트 시각화
-st.header('간단한 데이터 시각화')
-st.write('Numpy를 이용해 생성한 랜덤 데이터를 라인 차트로 그립니다.')
-
-# 랜덤 데이터 생성 (20행 3열)
-chart_data = pd.DataFrame(
-    np.random.randn(20, 3),
-    columns=['A (서울)', 'B (부산)', 'C (제주)']
-)
-
-# 데이터프레임 표출
-st.dataframe(chart_data)
-
-# 라인 차트 표출
-st.line_chart(chart_data)
+# 설계 실행
+if st.button("설계 검증 실행"):
+    # 1. 단면 성질 계산
+    girder = GirderSection(B, B1, H, H2)
+    props = girder.calculate_properties()
+    
+    # 2. 하중 산정
+    loads_engine = GirderLoads(girder_area_mm2=props['A_PC'], span_m=span, live_load_kpa=live_load)
+    dead_loads = loads_engine.calculate_dead_loads()
+    comb = loads_engine.get_load_combination(dead_loads)
+    
+    # 3. 결과 표시
+    col1, col2 = st.columns(2)
+    with col1:
+        st.subheader("📌 단면 성질 결과")
+        st.write(props)
+    with col2:
+        st.subheader("⚖️ 하중 산정 결과")
+        st.write(comb)
