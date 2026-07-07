@@ -6,7 +6,7 @@ from structure_design.loads import GirderLoads
 
 st.set_page_config(page_title="PSC 설계 플랫폼", layout="wide")
 
-st.title("🏗️ PSC 거더 설계 자동화 플랫폼")
+st.title("🏗️ PSC 거더 설계 자동화 플랫폼_ver01")
 
 # 사이드바 입력창
 st.sidebar.header("설계 변수 입력")
