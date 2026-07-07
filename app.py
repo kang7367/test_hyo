@@ -76,7 +76,7 @@ if st.button("🚀 KDS 응력 해석 및 종합 판정 실행", type="primary"):
         elif "⚠️" in val: return 'background-color: #ffe6cc'
         return 'background-color: #e6ffe6'
         
-    st.dataframe(df_report.style.applymap(highlight_decision, subset=['최종 판정 (Decision)']), use_container_width=True)
+    st.dataframe(df_report.style.map(highlight_decision, subset=['최종 판정 (Decision)']),use_container_width=True)
     
     # 부가 엔지니어링 정보 알림
     st.success("✅ 전체 구조 부재의 단면 성질, 모멘트 연동 및 엑셀 수식 크로스 체크가 완료되었습니다.")
