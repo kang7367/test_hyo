@@ -13,7 +13,7 @@ st.markdown("---")
 st.sidebar.header("1. 재료 제원 (Spec)")
 
 # 콘크리트 강도
-fck_PC = st.sidebar.number_input("PC 기더 설계기준강도 (fck_PC, MPa)", value=45)
+fck_PC = st.sidebar.number_input("PC 거더 설계기준강도 (fck_PC, MPa)", value=45)
 fck_RC = st.sidebar.number_input("RC 슬래브 설계기준강도 (fck_RC, MPa)", value=27)
 
 # 콘크리트 탄성계수 자동 계산 (KDS 기준 반영 수식)
@@ -55,10 +55,10 @@ with tab1:
     
     col1, col2 = st.columns(2)
     with col1:
-        st.subheader("PC 기더 기하형상 입력")
+        st.subheader("PC 거더 기하형상 입력")
         B = st.number_input("상부 플랜지 폭 (B, mm)", value=1400)
         B2 = st.number_input("복부 폭 (B2, mm)", value=1100)
-        H = st.number_input("기더 전체 높이 (H, mm)", value=1200)
+        H = st.number_input("거더 전체 높이 (H, mm)", value=1200)
         h2 = st.number_input("하부 플랜지 높이 관련 변수 (h2, mm)", value=680)
         
         # 凸형 보 단면 자동 계산을 위한 보조 변수 설정 (시트 수식 반영)
@@ -96,7 +96,7 @@ with tab1:
     Zb = I_PC / yb
     Zt = I_PC / yt
     
-    # 합성 단面 성능 (토핑 슬래브 포함)
+    # 합성 단면 성능 (토핑 슬래브 포함)
     b_f = B2  # T형보 유효폭 등 기준 적용 변수
     A_composite = A_PC + (top_g * b_f) # 임시 합성 면적 수식
     
@@ -121,7 +121,7 @@ with tab2:
         live_load = st.number_input("설계 활하중 (Live Load)", value=25.0)
 
     # 하중 계산 처리 (kN/m 단위 변환)
-    # 1. 기더 자중 = 단면적(m^2) * 24 kN/m^3
+    # 1. 거더 자중 = 단면적(m^2) * 24 kN/m^3
     girder_sw_knm = (A_PC / 10**6) * 24 
     # 2. HCS 자중 = 자중 * 분담폭
     hcs_sw_knm = hcs_weight * trib_width
@@ -139,7 +139,7 @@ with tab2:
     st.subheader("계산된 등분포하중 ($kN/m$)")
     
     lc1, lc2, lc3, lc4 = st.columns(4)
-    lc1.markdown(f"**PC 기더 자중:** {girder_sw_knm:.2f} kN/m")
+    lc1.markdown(f"**PC 거더 자중:** {girder_sw_knm:.2f} kN/m")
     lc2.markdown(f"**PC 슬래브 자중:** {hcs_sw_knm:.2f} kN/m")
     lc3.markdown(f"**토핑 콘크리트 자중:** {topping_sw_knm:.2f} kN/m")
     lc4.markdown(f"**마감 고정하중:** {fin_load_knm:.2f} kN/m")
