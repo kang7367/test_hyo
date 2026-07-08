@@ -4,7 +4,7 @@ import numpy as np
 # 페이지 설정
 st.set_page_config(page_title="PC Girder 설계 플랫폼", layout="wide")
 
-st.title("🏗️ PC Girder 구조설계 및 하중계산 플랫폼")
+st.title("🏗️ PC Girder 구조설계 및 하중계산 플랫폼_rev.01")
 st.markdown("---")
 
 # -----------------------------------------------------------------------------
