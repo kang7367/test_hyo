@@ -101,7 +101,7 @@ with tab1:
     A_composite = A_PC + (top_g * b_f) # 임시 합성 면적 수식
     
     c1, c2, c3 = st.columns(3)
-    c1.metric(label="PC 기더 단면적 ($A_{PC}$)", value=f"{A_PC:,.0f} mm²")
+    c1.metric(label="PC 거더 단면적 ($A_{PC}$)", value=f"{A_PC:,.0f} mm²")
     c2.metric(label="단면이차모멘트 ($I_{PC}$)", value=f"{I_PC:,.3e} mm⁴")
     c3.metric(label="합성 단면적 ($A_{composite}$)", value=f"{A_composite:,.0f} mm²")
 
