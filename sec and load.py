@@ -74,6 +74,9 @@ def build_payload(
     }
 
 
+RESULT_FIELDS = ("poi_name", "gis_x", "gis_y", "law_address", "road_address")
+
+
 def search_poi(payload: dict, timeout: float = 10.0) -> tuple[int, dict | list | str]:
     response = requests.post(API_URL, headers=DEFAULT_HEADERS, json=payload, timeout=timeout)
     try:
@@ -81,6 +84,23 @@ def search_poi(payload: dict, timeout: float = 10.0) -> tuple[int, dict | list |
     except ValueError:
         body = response.text
     return response.status_code, body
+
+
+def extract_poi_results(body: dict | list | str) -> list[dict]:
+    """content.address_analysis_results 에서 필요한 필드만 추출."""
+    if not isinstance(body, dict):
+        return []
+
+    results = body.get("content", {}).get("address_analysis_results") or []
+    if not isinstance(results, list):
+        return []
+
+    rows: list[dict] = []
+    for item in results:
+        if not isinstance(item, dict):
+            continue
+        rows.append({field: item.get(field) for field in RESULT_FIELDS})
+    return rows
 
 
 st.set_page_config(page_title="POI 검색 테스트", page_icon="📍", layout="wide")
@@ -135,8 +155,15 @@ if st.button("검색", type="primary"):
             except requests.RequestException as exc:
                 st.error(f"요청 실패: {exc}")
             else:
-                st.subheader(f"응답 (HTTP {status})")
-                if isinstance(body, (dict, list)):
-                    st.json(body)
-                else:
+                st.subheader(f"검색 결과 (HTTP {status})")
+                if not isinstance(body, dict):
                     st.code(body)
+                else:
+                    rows = extract_poi_results(body)
+                    if rows:
+                        st.dataframe(rows, use_container_width=True, hide_index=True)
+                    else:
+                        st.info("address_analysis_results 가 비어 있습니다.")
+
+                    with st.expander("원본 응답", expanded=False):
+                        st.json(body)
